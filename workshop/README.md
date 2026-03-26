@@ -9,31 +9,20 @@ writing a single line of code.
 
 ---
 
-## The SDD Bug-Fix & Feature Workflow
+## The SDD Workflow
 
-For every bug, follow this 5-step loop:
-
-```
-1. CLARIFY   → understand the intended behaviour from the spec  (/speckit.clarify)
-2. REPRODUCE → confirm the bug exists and is observable
-3. SPECIFY   → write a one-sentence user story for the fix      (/speckit.specify)
-4. TEST      → write a failing test that encodes the expected behaviour
-5. FIX       → change the minimum amount of code to make the test green
-```
-
-For the feature exercise, use the full specification pipeline:
+Both bug fixes and new features follow the same five-command pipeline:
 
 ```
-1. SPECIFY   → write the user story and acceptance criteria      (/speckit.specify)
-2. PLAN      → translate the spec into a technical design        (/speckit.plan)
-3. TASKS     → break the plan into ordered implementation steps  (/speckit.tasks)
-4. TEST      → write failing tests for each acceptance criterion
-5. IMPLEMENT → work through the task list
-6. VERIFY    → run all tests, lint, and typecheck
+1. SPECIFY   → encode the behaviour as a user story with acceptance criteria  (/speckit.specify)
+2. CLARIFY   → resolve any open questions before committing to a design        (/speckit.clarify)
+3. PLAN      → translate the spec into a technical design                     (/speckit.plan)
+4. TASKS     → break the plan into ordered, parallelizable implementation steps (/speckit.tasks)
+5. IMPLEMENT → execute the task list; speckit writes tests, applies changes,
+               and runs verification automatically                             (/speckit.implement)
 ```
 
-The speckit commands below map directly to these loops. Each exercise file shows exactly which
-command to run and what to type at each stage.
+Each exercise file shows exactly which command to run and what to type at each stage.
 
 ---
 
@@ -45,9 +34,9 @@ need to do anything manually.
 
 | Exercise | Branch (created by speckit) | Spec folder (populated by speckit) |
 |----------|-----------------------------|-------------------------------------|
-| Bug 01   | `workshop/bug-01-session-list-order-overflow` | `specs/bug-01-session-list-order-overflow/` |
-| Bug 02   | `workshop/bug-02-inflate-total`               | `specs/bug-02-inflate-total/` |
-| Feature 01 | `workshop/feature-01-break-timer`           | `specs/feature-01-break-timer/` |
+| Bug 01     | `workshop/bug-01-session-list-order-overflow` | `specs/bug-01-session-list-order-overflow/` |
+| Bug 02     | `workshop/bug-02-inflate-total`               | `specs/bug-02-inflate-total/` |
+| Feature 01 | `workshop/feature-01-break-timer`             | `specs/feature-01-break-timer/` |
 
 ---
 
@@ -55,8 +44,8 @@ need to do anything manually.
 
 | # | File | Title | Component | Branch | Speckit Focus |
 |---|------|-------|-----------|--------|---------------|
-| 1 | [bug-01-session-list-order-overflow.md](bugs/bug-01-session-list-order-overflow.md) | Session List Order & Overflow | Frontend | `workshop/bug-01-session-list-order-overflow` | `/speckit.clarify` → `/speckit.specify` |
-| 2 | [bug-02-inflate-total.md](bugs/bug-02-inflate-total.md) | Today's Total Includes Active Session Time | Backend | `workshop/bug-02-inflate-total` | `/speckit.clarify` → `/speckit.specify` |
+| 1 | [bug-01-session-list-order-overflow.md](bugs/bug-01-session-list-order-overflow.md) | Session List Order & Overflow | Frontend | `workshop/bug-01-session-list-order-overflow` | `/speckit.specify` → `/speckit.clarify` → `/speckit.plan` → `/speckit.tasks` → `/speckit.implement` |
+| 2 | [bug-02-inflate-total.md](bugs/bug-02-inflate-total.md) | Today's Total Includes Active Session Time | Backend | `workshop/bug-02-inflate-total` | `/speckit.specify` → `/speckit.clarify` → `/speckit.plan` → `/speckit.tasks` → `/speckit.implement` |
 
 ---
 
@@ -64,7 +53,7 @@ need to do anything manually.
 
 | # | File | Title | Component | Branch | Speckit Focus |
 |---|------|-------|-----------|--------|---------------|
-| 1 | [feature-01-break-timer.md](features/feature-01-break-timer.md) | Break Timer | Frontend | `workshop/feature-01-break-timer` | `/speckit.specify` → `/speckit.plan` → `/speckit.tasks` |
+| 1 | [feature-01-break-timer.md](features/feature-01-break-timer.md) | Break Timer | Frontend | `workshop/feature-01-break-timer` | `/speckit.specify` → `/speckit.clarify` → `/speckit.plan` → `/speckit.tasks` → `/speckit.implement` |
 
 ---
 
@@ -108,10 +97,11 @@ After a plan is created, analyzes the plan and related design documents to gener
 
 | Command | When to use it |
 |---------|----------------|
-| `/speckit.clarify` | Ask targeted questions about an underspecified behaviour before writing code |
 | `/speckit.specify` | Encode a new or corrected behaviour as a user story with acceptance criteria |
+| `/speckit.clarify` | Ask targeted questions about an underspecified behaviour before writing code |
 | `/speckit.plan` | Translate a completed spec into a technical implementation plan |
 | `/speckit.tasks` | Break a plan into concrete, ordered, parallelizable implementation tasks |
+| `/speckit.implement` | Execute the task list — writes tests, applies changes, and runs verification |
 | `/speckit.checklist` | Generate a verification checklist for a specific change |
 | `/speckit.analyze` | Audit consistency between spec, plan, and tasks after making changes |
 

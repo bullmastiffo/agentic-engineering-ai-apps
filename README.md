@@ -77,13 +77,14 @@ Open http://localhost:5173 in your browser.
 ```
 backend/         FastAPI backend (Python 3.11, aiosqlite, SQLite)
 frontend/        React + TypeScript frontend (Vite 5)
-workshop/        Intentional workshop bugs + exercise guide
+workshop/        Exercise guide, bugs, and feature descriptions
 specs/           Design artifacts (spec, plan, data-model, contracts, tasks)
+.specify/        Spec-kit configuration, scripts, and templates
 ```
 
 ## Development
 
-See [specs/001-focus-timer/quickstart.md](specs/001-focus-timer/quickstart.md) for full development setup.
+See [workshop/README.md](workshop/README.md) for the exercise guide and the SDD workflow used throughout this project.
 
 ### Tests
 
@@ -106,8 +107,7 @@ cd frontend && npm run lint && npm run typecheck
 ```
 
 
-Relevant odcumentation:
-- https://github.com/github/spec-kit/blob/main/spec-driven.md
+## Learn More
 
-Relevant repository:
-- https://github.com/github/spec-kit
+- [Spec-Driven Development methodology](https://github.com/github/spec-kit/blob/main/spec-driven.md)
+- [Spec Kit repository](https://github.com/github/spec-kit)
