@@ -51,3 +51,4 @@ Thumbs.db
 # ========================
 *.log
 logs/
+backend/focus_timer.db
