@@ -12,7 +12,7 @@ import type {
 // State shape
 // ---------------------------------------------------------------------------
 
-export type TimerStatus = 'idle' | 'running' | 'paused' | 'completed' | 'stopped_early';
+export type TimerStatus = 'idle' | 'running' | 'paused' | 'completed' | 'stopped_early' | 'break';
 
 interface TimerState {
   status: TimerStatus;
@@ -24,6 +24,8 @@ interface TimerState {
   pausedAt: number | null;      // Unix ms when current pause started; null if not paused
 
   remainingSeconds: number | null; // Computed each tick
+
+  breakNotification: string | null;
 
   todaySessions: SessionSummaryResponse[];
   totalFocusedMinutes: number;
@@ -38,6 +40,7 @@ interface TimerActions {
   pauseSession: () => Promise<void>;
   resumeSession: () => Promise<void>;
   stopSession: () => Promise<void>;
+  skipBreak: () => void;
   tick: () => void;
   loadToday: () => Promise<void>;
   loadSettings: () => Promise<void>;
@@ -98,6 +101,7 @@ export const useTimerStore = create<TimerState & TimerActions>((set, get) => ({
   pausedSeconds: null,
   pausedAt: null,
   remainingSeconds: null,
+  breakNotification: null,
   todaySessions: [],
   totalFocusedMinutes: 0,
   settings: DEFAULT_SETTINGS,
@@ -122,6 +126,7 @@ export const useTimerStore = create<TimerState & TimerActions>((set, get) => ({
 
   startSession: async () => {
     const { settings } = get();
+    set({ breakNotification: null });
     try {
       const session = await apiFetch<ActiveSessionResponse>('/sessions/start', {
         method: 'POST',
@@ -135,8 +140,8 @@ export const useTimerStore = create<TimerState & TimerActions>((set, get) => ({
   },
 
   pauseSession: async () => {
-    const { sessionId } = get();
-    if (sessionId === null) return;
+    const { sessionId, status } = get();
+    if (sessionId === null || status === 'break') return;
     // Optimistic: freeze remaining before network round-trip
     const snapshot = get().remainingSeconds;
     set({ status: 'paused', pausedAt: Date.now() });
@@ -172,8 +177,8 @@ export const useTimerStore = create<TimerState & TimerActions>((set, get) => ({
   },
 
   stopSession: async () => {
-    const { sessionId } = get();
-    if (sessionId === null) return;
+    const { sessionId, status } = get();
+    if (sessionId === null || status === 'break') return;
     try {
       await apiFetch<ActiveSessionResponse>(`/sessions/${sessionId}/stop`, {
         method: 'POST',
@@ -191,6 +196,27 @@ export const useTimerStore = create<TimerState & TimerActions>((set, get) => ({
 
   tick: () => {
     const { status, startAt, configuredSeconds, pausedSeconds, pausedAt, sessionId } = get();
+
+    if (status === 'break') {
+      if (startAt === null || configuredSeconds === null || pausedSeconds === null) return;
+      const remaining = computeRemaining(startAt, configuredSeconds, pausedSeconds, pausedAt);
+      if (remaining <= 0) {
+        set({
+          status: 'idle',
+          sessionId: null,
+          startAt: null,
+          configuredSeconds: null,
+          pausedSeconds: null,
+          pausedAt: null,
+          remainingSeconds: null,
+          breakNotification: 'Break over — ready when you are',
+        });
+      } else {
+        set({ remainingSeconds: remaining });
+      }
+      return;
+    }
+
     if (status !== 'running' || startAt === null || configuredSeconds === null || pausedSeconds === null) return;
 
     const remaining = computeRemaining(startAt, configuredSeconds, pausedSeconds, pausedAt);
@@ -200,9 +226,16 @@ export const useTimerStore = create<TimerState & TimerActions>((set, get) => ({
       if (sessionId !== null) {
         apiFetch<ActiveSessionResponse>(`/sessions/${sessionId}/complete`, { method: 'POST' })
           .then(() => {
+            const { settings } = get();
+            const breakSeconds = settings.break_minutes * 60;
             set({
-              status: 'completed',
-              remainingSeconds: 0,
+              status: 'break',
+              sessionId: null,
+              startAt: Date.now(),
+              configuredSeconds: breakSeconds,
+              pausedSeconds: 0,
+              pausedAt: null,
+              remainingSeconds: breakSeconds,
             });
             return get().loadToday();
           })
@@ -211,6 +244,19 @@ export const useTimerStore = create<TimerState & TimerActions>((set, get) => ({
     } else {
       set({ remainingSeconds: remaining });
     }
+  },
+
+  skipBreak: () => {
+    if (get().status !== 'break') return;
+    set({
+      status: 'idle',
+      sessionId: null,
+      startAt: null,
+      configuredSeconds: null,
+      pausedSeconds: null,
+      pausedAt: null,
+      remainingSeconds: null,
+    });
   },
 
   loadToday: async () => {

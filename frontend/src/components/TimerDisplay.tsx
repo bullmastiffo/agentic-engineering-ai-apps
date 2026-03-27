@@ -19,6 +19,7 @@ const STATUS_LABELS: Record<TimerStatus, string> = {
   paused: 'Paused',
   completed: 'Completed',
   stopped_early: 'Stopped early',
+  break: 'Break',
 };
 
 export const TimerDisplay = React.memo(function TimerDisplay({ status, remainingSeconds }: Props) {

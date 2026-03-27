@@ -41,4 +41,10 @@ describe('TimerDisplay', () => {
     render(<TimerDisplay status="running" remainingSeconds={-5} />);
     expect(screen.getByText('00:00')).toBeInTheDocument();
   });
+
+  it('renders break state', () => {
+    render(<TimerDisplay status="break" remainingSeconds={300} />);
+    expect(screen.getByRole('status')).toHaveTextContent('Break');
+    expect(screen.getByText('05:00')).toBeInTheDocument();
+  });
 });
