@@ -13,10 +13,12 @@ export function App() {
     totalFocusedMinutes,
     settings,
     backendReachable,
+    breakNotification,
     startSession,
     pauseSession,
     resumeSession,
     stopSession,
+    skipBreak,
     saveSettings,
   } = useTimerService();
 
@@ -27,6 +29,12 @@ export function App() {
       {!backendReachable && (
         <div className="offline-banner" role="alert" aria-live="assertive">
           Offline — data may not be saved
+        </div>
+      )}
+
+      {breakNotification && (
+        <div className="break-notification" role="alert" aria-live="assertive">
+          {breakNotification}
         </div>
       )}
 
@@ -49,6 +57,7 @@ export function App() {
           onPause={() => { void pauseSession(); }}
           onResume={() => { void resumeSession(); }}
           onStop={() => { void stopSession(); }}
+          onSkipBreak={() => { skipBreak(); }}
         />
         <TodaySummary
           sessions={todaySessions}

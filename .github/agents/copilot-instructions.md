@@ -29,6 +29,7 @@ cd src; pytest; ruff check .
 Python 3.11 (backend) · TypeScript 5.x / Node 20+ (frontend): Follow standard conventions
 
 ## Recent Changes
+- 002-break-timer: Frontend-only feature. TypeScript 5.5.3, React 18.3.1, Zustand 4.5.2, Vite 5.4.1, Vitest 2.0.5. Extends timer state machine with 'break' status. No backend changes.
 - 006-break-timer: Added TypeScript 5 (strict mode enabled) + React 18, Zustand (state store), Vite (dev/build)
 - 004-fix-total-rounding: Added Python 3.12 (backend), TypeScript / React 18 (frontend) + FastAPI, aiosqlite, Pydantic (backend); Vite, React (frontend)
 - 003-session-list-display: Added TypeScript 5.5 / React 18.3 + React 18.3, Zustand 4.5, Vite 5.4, Vitest 2.0, @testing-library/react 16

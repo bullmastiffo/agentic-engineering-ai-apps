@@ -6,6 +6,7 @@
   --tomato:        #e8392a;
   --tomato-dark:   #c0291c;
   --tomato-light:  #ff6b5b;
+  --teal:          #0ea5a5;
   --cream:         #fdf6ee;
   --card-bg:       #fffaf5;
   --text:          #2d1f1a;
@@ -110,6 +111,9 @@ body {
 .timer-display[data-status="running"]::before  { background: radial-gradient(circle, #ffeae6 0%, transparent 70%); }
 .timer-display[data-status="paused"]::before   { background: radial-gradient(circle, #fff8e6 0%, transparent 70%); }
 .timer-display[data-status="completed"]::before { background: radial-gradient(circle, #e6f7ee 0%, transparent 70%); }
+.timer-display[data-status="break"] .timer-status    { color: var(--teal); }
+.timer-display[data-status="break"] .timer-countdown { color: var(--teal); }
+.timer-display[data-status="break"]::before  { background: radial-gradient(circle, #e0f7f7 0%, transparent 70%); }
 
 /* ── Controls ── */
 .controls {
@@ -251,6 +255,18 @@ body {
   background: #fff3cd;
   color: #856404;
   border: 1px solid #ffc107;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* ── Break notification ── */
+.break-notification {
+  background: #e0f7f7;
+  color: #0a6e6e;
+  border: 1px solid var(--teal);
   border-radius: 0.5rem;
   padding: 0.6rem 1rem;
   font-size: 0.875rem;
