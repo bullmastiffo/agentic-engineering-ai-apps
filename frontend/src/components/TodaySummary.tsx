@@ -51,7 +51,7 @@ export const TodaySummary = React.memo(function TodaySummary({
         <p className="today-empty">No sessions yet today.</p>
       ) : (
         <ul className="session-list" aria-label="Today's sessions">
-          {sessions.map((s) => (
+          {[...sessions].reverse().map((s) => (
             <SessionRow key={s.id} session={s} />
           ))}
         </ul>
